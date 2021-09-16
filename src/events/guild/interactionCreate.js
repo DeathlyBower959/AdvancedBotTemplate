@@ -12,7 +12,7 @@ module.exports = async (client, Discord, interaction) => {
             .setColor("RED")
             .setTitle("Error...")
             .setDescription(`Sorry, the select menu you just used caused an error!\n\nTry contacting <@${owner}> about it!`)
-            interaction.channel.send({embeds: [errorSelectInteraction], ephemeral: true}).then(msg => {
+            interaction.channel.send({embeds: [errorSelectInteraction]}).then(msg => {
                 setTimeout(function() {
                     if (msg) msg.delete();
                 }, 5000)
@@ -23,16 +23,15 @@ module.exports = async (client, Discord, interaction) => {
         selectInteraction.execute(interaction);
     } 
     else if (interaction.isButton()) {
-
         
         let buttonInteraction = client.buttonInteractions.get(interaction.customId)
-        
+
         if (!buttonInteraction) {
             const errorButtonInteraction = new Discord.MessageEmbed()
             .setColor("RED")
             .setTitle("Error...")
             .setDescription(`Sorry, the button you just clicked caused an error!\n\nTry contacting <@${owner}> about it!`)
-            interaction.channel.send({embeds: [errorButtonInteraction], ephemeral: true}).then(msg => {
+            interaction.channel.send({embeds: [errorButtonInteraction]}).then(msg => {
                 setTimeout(function() {
                     if (msg) msg.delete();
                 }, 5000)

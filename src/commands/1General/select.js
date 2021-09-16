@@ -4,7 +4,6 @@ module.exports = {
     name: "select",
     description: "Testing select menus",
     cooldown: 0, // Optional
-    deleteAfter: 0, // Optional (-1 = dont delete | 0 = insta delete | 0> = delete after x seconds)
     onlyDebug: true,
     async execute(message, args, cmd, client, Discord, prefix) {
   
