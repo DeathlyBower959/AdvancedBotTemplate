@@ -1,5 +1,15 @@
 {
 	"prefix": "!",
 	"owner": "689284642184101970",
-	"invite": ".gg/pfZATvy3Fs"
+	"statusDelay": 10,
+	"statuses": [
+		{
+			"type": "playing", 
+			"content": "{prefix}help | .gg/pfZATvy3Fs"
+		},
+		{
+			"type": "WATCHING", 
+			"content": "{guildCountText}"
+		}
+	]
 }

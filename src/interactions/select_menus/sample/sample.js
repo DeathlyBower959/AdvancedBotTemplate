@@ -4,12 +4,12 @@ const { MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.
 module.exports = {
 	id: "sample",
 	async execute(interaction) {
-		const selectedItem = interaction.values[0];
-		const selectedItems = interaction.values;
+		const selectedItemID = interaction.values[0];
+		const selectedItemIDs = interaction.values;
 		
 		
 		await interaction.reply({
-			content: "This was a reply from select menu handler!\nBtw you chose: " + selectedItem,
+			content: "This was a reply from select menu handler!\nChosen ID: " + selectedItemID,
 			ephemeral: true
 		});
 

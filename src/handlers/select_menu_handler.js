@@ -16,7 +16,7 @@ module.exports = (client, Discord) => {
             for (const file of button_files) {
                 const interaction = require(`../interactions/select_menus/${dir}/${file}`);
                 if (interaction.id) {
-                    client.selectCommands.set(interaction.id, interaction);
+                    client.selectInteractions.set(interaction.id, interaction);
                     table.addRow(interaction.id, "🟢 Loaded");
                 } else {
                     table.addRow(file, "🔴 No ID");

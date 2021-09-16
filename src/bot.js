@@ -10,18 +10,19 @@ const colors = require("colors");
 require('dotenv').config()
 
 const client = new Client({
-    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS],
 });
 
 client.commands = new Collection();
-client.buttonCommands = new Collection();
-client.selectCommands = new Collection();
+client.buttonInteractions = new Collection();
+client.selectInteractions = new Collection();
+client.slashCommands = new Collection();
 
 client.consoleLogs = []
 
 const handlerFiles = fs
-.readdirSync('src/handlers')
-.filter(file => file.endsWith(".js"));
+    .readdirSync('src/handlers')
+    .filter(file => file.endsWith(".js"));
 
 handlerFiles.forEach(handler => {
     require(`./handlers/${handler}`)(client, Discord);
@@ -30,6 +31,7 @@ handlerFiles.forEach(handler => {
 //keepAlive();                                       ONLY UNCOMMENT IF USING REPL.IT
 client.login(process.env.token)
 
+//Logging Handler Setups
 console.log("\n>--------------".gray)
 console.log("> Started Loading Files".gray)
 let previousKey;
@@ -46,6 +48,5 @@ client.consoleLogs.forEach(item => {
     }
     previousKey = item.key;
 })
-
 console.log("\n> Completed Loading Files".gray)
 console.log(">--------------\n".gray)
