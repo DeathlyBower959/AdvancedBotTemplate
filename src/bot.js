@@ -1,16 +1,17 @@
+//To use repl.it, uncomment two lines in this file, and set it up on repl (I dont suggest debugging in repl.it)
+
+//const keepAlive = require('./server.js');                                       ONLY UNCOMMENT IF USING REPL.IT
+
 const fs = require("fs");
 const Discord = require("discord.js");
 const { Client, Collection, Intents } = require("discord.js");
 const jsonfile = require('jsonfile');
-// const { REST } = require("@discordjs/rest");
-// const { Routes } = require("discord-api-types/v9");
 const colors = require("colors");
 require('dotenv').config()
 
 const client = new Client({
 	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
 });
-// require('discord-buttons')(client);
 
 client.commands = new Collection();
 client.buttonCommands = new Collection();
@@ -26,6 +27,7 @@ handlerFiles.forEach(handler => {
     require(`./handlers/${handler}`)(client, Discord);
 })
 
+//keepAlive();                                       ONLY UNCOMMENT IF USING REPL.IT
 client.login(process.env.token)
 
 console.log("\n>--------------".gray)
