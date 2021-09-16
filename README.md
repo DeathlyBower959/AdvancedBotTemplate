@@ -103,6 +103,36 @@ module.exports = {
 };
 ```
 
+<hr>
+
+**MessageButton**
+```js
+const row = new MessageActionRow()
+    .addComponents(
+        new MessageButton()
+        .setCustomId('primary')
+        .setLabel('Primary')
+        .setStyle('PRIMARY'),
+    );
+```
+
+**MessageSelectMenu**
+```js
+const row = new MessageActionRow()
+    .addComponents(
+        new MessageSelectMenu()
+        .setCustomId('SELECT_MENU_ID')
+        .setPlaceholder('Nothing selected')
+        .addOptions([{
+                label: 'Option 1',
+                description: 'A description',
+                value: 'OPTION_ID',
+            }
+        ]),
+    );
+```
+
+
 # Important Links
 - [Discord.js Documentation](https://discord.js.org/#/docs)
 - [Discord.js server](https://discord.gg/bRCvFy9)
