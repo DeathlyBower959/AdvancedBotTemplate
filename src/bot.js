@@ -1,7 +1,3 @@
-//To use repl.it, uncomment two lines in this file, and set it up on repl (I dont suggest debugging in repl.it and watch a tutorial if you don't know how)
-
-//const keepAlive = require('./server.js');          ONLY UNCOMMENT IF USING REPL.IT
-
 const fs = require("fs");
 const Discord = require("discord.js");
 const { Client, Collection, Intents } = require("discord.js");
@@ -28,7 +24,6 @@ handlerFiles.forEach(handler => {
     require(`./handlers/${handler}`)(client, Discord);
 })
 
-//keepAlive();                                       ONLY UNCOMMENT IF USING REPL.IT
 client.login(process.env.token)
 
 //Logging Handler Setups
