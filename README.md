@@ -69,7 +69,7 @@ module.exports = {
       //Your code in here
   
     }
-  }
+}
 ```
 
 **New Button Interaction:**
@@ -77,14 +77,14 @@ module.exports = {
 const { MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.js');
 
 module.exports = {
-	id: "sample",
-	async execute(interaction) {
+    id: "BUTTON_ID",
+    async execute(interaction) {
 		
-		//Your code in here
+        //Your code in here
 		
-		interaction.deferUpdate();
-		return;
-	},
+        interaction.deferUpdate();
+        return;
+    },
 };
 ```
 
@@ -93,16 +93,16 @@ module.exports = {
 const { MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.js');
 
 module.exports = {
-	id: "sample",
-	async execute(interaction) {
-		const selectedItem = interaction.values[0];
-		const selectedItems = interaction.values;
+    id: "SELECT_MENU_ID",
+    async execute(interaction) {
+        const selectedItem = interaction.values[0];
+        const selectedItems = interaction.values;
 		
-		//Your code here
+        //Your code here
 		
-		interaction.deferUpdate();
-		return;
-	},
+	interaction.deferUpdate();
+	return;
+    },
 };
 ```
 
