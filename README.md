@@ -28,10 +28,6 @@ token=TOKEN_THAT_YOU_COPIED_EARLIER
 - Then replace the hastags in this link with your `Application ID` that you just copied <br>
 `https://discordapp.com/oauth2/authorize?client_id=############&scope=bot&permissions=8`
 
-# Important Links
-- [Discord.js Documentation](https://discord.js.org/#/docs)
-- [Discord.js server](https://discord.gg/bRCvFy9)
-
 # Using The Code
 *This is just a brief explanation of how to code works, to help you better understand how I decided to structure the code.*
 
@@ -53,6 +49,7 @@ The `error.js` files in the interactions folder is only for when a button/select
 
 The `dirs.json` is for the help command, and allows it to show all of your commands, without you manually updating it.
 
+# Code Templates
 
 **New Command:**
 ```js
@@ -105,6 +102,10 @@ module.exports = {
     },
 };
 ```
+
+# Important Links
+- [Discord.js Documentation](https://discord.js.org/#/docs)
+- [Discord.js server](https://discord.gg/bRCvFy9)
 
 # Author
 - Discord: DeathlyBower959 [YT]#2561
