@@ -13,7 +13,7 @@ module.exports = async (client, Discord) => {
 
     const commandDirs = fs
         .readdirSync('src/commands')
-        .filter(dir => fs.lstatSync(`./commands/${dir}`).isDirectory())
+        .filter(dir => fs.lstatSync(`src/commands/${dir}`).isDirectory())
 
     commandDirs.forEach(dir => {
         //Creates new empty object for each directory

@@ -10,6 +10,7 @@ module.exports = {
 		
 		await interaction.reply({
 			content: "This was a reply from select menu handler!\nBtw you chose: " + selectedItem,
+			ephemeral: true
 		});
 
 		//interaction.deferUpdate();
