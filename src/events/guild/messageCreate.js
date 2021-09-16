@@ -50,14 +50,7 @@ module.exports = async (client, Discord, message) => {
 
     if (!message.content.startsWith(prefix) || !command) return;
 
-    //AutoDelete
-    if (command.deleteAfter > 0) {
-        setTimeout(function() {
-            if (message) message.delete()
-        }, command.deleteAfter * 1000)
-    } else if (command.deleteAfter == 0) {
-        message.delete();
-    }
+    message.delete();
     
     //Bot Perms
     let missingPerms = [];

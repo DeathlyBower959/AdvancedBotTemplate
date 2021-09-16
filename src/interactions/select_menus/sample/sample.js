@@ -1,4 +1,6 @@
 
+const { MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.js');
+
 module.exports = {
 	id: "sample",
 	async execute(interaction) {
