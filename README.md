@@ -70,7 +70,6 @@ module.exports = {
   
     }
   }
-  
 ```
 
 **New Button Interaction:**
@@ -87,7 +86,6 @@ module.exports = {
 		return;
 	},
 };
-  
 ```
 
 **New Select Menu Interaction:**
@@ -106,7 +104,6 @@ module.exports = {
 		return;
 	},
 };
-  
 ```
 
 # Author
