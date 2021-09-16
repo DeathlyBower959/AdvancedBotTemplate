@@ -1,6 +1,6 @@
-//To use repl.it, uncomment two lines in this file, and set it up on repl (I dont suggest debugging in repl.it)
+//To use repl.it, uncomment two lines in this file, and set it up on repl (I dont suggest debugging in repl.it and watch a tutorial if you don't know how)
 
-//const keepAlive = require('./server.js');                                       ONLY UNCOMMENT IF USING REPL.IT
+//const keepAlive = require('./server.js');          ONLY UNCOMMENT IF USING REPL.IT
 
 const fs = require("fs");
 const Discord = require("discord.js");
@@ -10,7 +10,7 @@ const colors = require("colors");
 require('dotenv').config()
 
 const client = new Client({
-	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
 });
 
 client.commands = new Collection();
@@ -20,8 +20,8 @@ client.selectCommands = new Collection();
 client.consoleLogs = []
 
 const handlerFiles = fs
-    .readdirSync('src/handlers')
-    .filter(file => file.endsWith(".js"));
+.readdirSync('src/handlers')
+.filter(file => file.endsWith(".js"));
 
 handlerFiles.forEach(handler => {
     require(`./handlers/${handler}`)(client, Discord);
