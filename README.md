@@ -69,38 +69,14 @@ module.exports = {
 }
 ```
 
-**New Button Interaction:**
+**New Button Collector:**
 ```js
-const { MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.js');
 
-module.exports = {
-    id: "BUTTON_ID",
-    async execute(interaction) {
-		
-        //Your code in here
-		
-        interaction.deferUpdate();
-        return;
-    },
-};
 ```
 
-**New Select Menu Interaction:**
+**New Select Menu Collector:**
 ```js
-const { MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.js');
 
-module.exports = {
-    id: "SELECT_MENU_ID",
-    async execute(interaction) {
-        const selectedItem = interaction.values[0];
-        const selectedItems = interaction.values;
-		
-        //Your code here
-		
-	interaction.deferUpdate();
-	return;
-    },
-};
 ```
 
 <hr>

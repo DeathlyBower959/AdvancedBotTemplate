@@ -5,8 +5,8 @@ module.exports = {
   name: "help",
   description: "Lists all avaliable bot commands",
   aliases: ['h'],
-  cooldown: 5,
-  async execute(message, args, cmd, client, Discord, prefix, profileData) {
+  cooldown: 0,
+  async execute(message, args, cmd, client, Discord, prefix) {
 
     const dirs = await jsonfile.readFileSync('./dirs.json')
 
@@ -31,7 +31,7 @@ module.exports = {
 
       //Loop through all commands in specified directory
       Object.keys(dirs[dirName]).forEach((fileName) => {
-        
+
         var desc = client.commands.get(fileName).description
         var usage = client.commands.get(fileName).usage
         var alia = client.commands.get(fileName).aliases
@@ -51,44 +51,147 @@ module.exports = {
     })
 
     helpEmbed.setTitle('Help Page - ' + dirNames[0]) //Embed Title
-    helpEmbed.setDescription(pages[page - 1]) //Sets desc as default page
+    helpEmbed.setDescription(pages[0]) //Sets desc as default page
     helpEmbed.setFooter(`Page ${page} of ${pages.length}`) //Showing page location
 
 
-    const row = new MessageActionRow()
-    .addComponents(
-      new MessageButton()
+    const firstPgBtn = new MessageButton()
       .setCustomId('firstPage')
-      .setLabel('◀️')
-      .setStyle('PRIMARY'),
+      .setLabel('⏮️')
+      .setStyle('PRIMARY')
+      .setDisabled(true)
 
-      new MessageButton()
+    const backPgBtn = new MessageButton()
       .setCustomId('backPage')
-      .setLabel('⬅️')
-      .setStyle('PRIMARY'),
+      .setLabel('◀️')
+      .setStyle('PRIMARY')
+      .setDisabled(true)
 
-      new MessageButton()
+    const forwardPgBtn = new MessageButton()
       .setCustomId('forwardPage')
-      .setLabel('➡️')
-      .setStyle('PRIMARY'),
-
-      new MessageButton()
-      .setCustomId('lastPage')
       .setLabel('▶️')
-      .setStyle('PRIMARY'),
+      .setStyle('PRIMARY')
 
-      new MessageButton()
+    const lastPgBtn = new MessageButton()
+      .setCustomId('lastPage')
+      .setLabel('⏭️')
+      .setStyle('PRIMARY')
+
+    const deletePgBtn = new MessageButton()
       .setCustomId('deleteEmbed')
       .setLabel('🗑️')
-      .setStyle('DANGER'),
-    );
+      .setStyle('DANGER')
 
-    let sentEmbed;
+    let row = new MessageActionRow()
+      .addComponents(
+        firstPgBtn,
+        backPgBtn,
+        forwardPgBtn,
+        lastPgBtn,
+        deletePgBtn
+      );
 
-    await message.channel.send({embeds: [helpEmbed], ephemeral: true, components: [row]}).then(msg => {
+    async function updateBtnVisibility(pg) {
+      if (pg === 1) {
+        firstPgBtn.setDisabled(true)
+        backPgBtn.setDisabled(true)
+        forwardPgBtn.setDisabled(false)
+        lastPgBtn.setDisabled(false)
+      } else if (pg === pages.length) {
+        firstPgBtn.setDisabled(false)
+        backPgBtn.setDisabled(false)
+        forwardPgBtn.setDisabled(true)
+        lastPgBtn.setDisabled(true)
+      } else {
+        firstPgBtn.setDisabled(false)
+        backPgBtn.setDisabled(false)
+        forwardPgBtn.setDisabled(false)
+        lastPgBtn.setDisabled(false)
+      }
+      row = new MessageActionRow()
+        .addComponents(
+          firstPgBtn,
+          backPgBtn,
+          forwardPgBtn,
+          lastPgBtn,
+          deletePgBtn
+        );
+    }
 
-      sentEmbed = msg.embeds[0]
-      
+    await message.channel.send({ embeds: [helpEmbed], components: [row] }).then(msg => {
+
+      const firstPageFilter = btn => btn.customId === 'firstPage' && btn.user.id === message.author.id;
+      const firstPageCollector = msg.createMessageComponentCollector({ filter: firstPageFilter, time: 60000 });
+
+      const backPageFilter = btn => btn.customId === 'backPage' && btn.user.id === message.author.id;
+      const backPageCollector = msg.createMessageComponentCollector({ filter: backPageFilter, time: 60000 });
+
+      const forwardPageFilter = btn => btn.customId === 'forwardPage' && btn.user.id === message.author.id;
+      const forwardPageCollector = msg.createMessageComponentCollector({ filter: forwardPageFilter, time: 60000 });
+
+      const lastPageFilter = btn => btn.customId === 'lastPage' && btn.user.id === message.author.id;
+      const lastPageCollector = msg.createMessageComponentCollector({ filter: lastPageFilter, time: 60000 });
+
+      const deleteEmbedFilter = btn => btn.customId === 'deleteEmbed' && btn.user.id === message.author.id;
+      const deleteEmbedCollector = msg.createMessageComponentCollector({ filter: deleteEmbedFilter, time: 60000 });
+
+      firstPageCollector.on('collect', async i => {
+        await updateBtnVisibility(1)
+        if (page === 1) {
+          i.deferUpdate()
+          return;
+        } //Make sure on the first page, and return so you cant go back.
+        page = 1;
+        helpEmbed.setTitle(dirNames[0]);
+        helpEmbed.setDescription(pages[0]);
+        helpEmbed.setFooter(`Page ${page} of ${pages.length}`);
+        await i.update({ embeds: [helpEmbed], components: [row] })
+      })
+
+      backPageCollector.on('collect', async i => {
+        await updateBtnVisibility(page-1)
+        if (page === 1) {
+          i.deferUpdate()
+          return;
+        } //Make sure on the first page, and return so you cant go back.
+        page--; //If it can go back, move back a page number
+        helpEmbed.setTitle(dirNames[page - 1]);
+        helpEmbed.setDescription(pages[page - 1]);
+        helpEmbed.setFooter(`Page ${page} of ${pages.length}`);
+        await i.update({ embeds: [helpEmbed], components: [row] })
+      })
+
+      forwardPageCollector.on('collect', async i => {
+        await updateBtnVisibility(page+1)
+        if (page === pages.length) {
+          i.deferUpdate()
+          return;
+        } //Make sure on the last page, and return so you cant go forward.
+        page++; //If it can go forward, move forward a page number
+        helpEmbed.setTitle(dirNames[page - 1]);
+        helpEmbed.setDescription(pages[page - 1]);
+        helpEmbed.setFooter(`Page ${page} of ${pages.length}`);
+        await i.update({ embeds: [helpEmbed], components: [row] })
+      })
+
+      lastPageCollector.on('collect', async i => {
+        await updateBtnVisibility(pages.length)
+        if (page === pages.length) {
+          i.deferUpdate()
+          return;
+        } //Make sure on the last page, and return so you cant go forward.
+        page = pages.length
+        helpEmbed.setTitle(dirNames[page - 1]);
+        helpEmbed.setDescription(pages[page - 1]);
+        helpEmbed.setFooter(`Page ${page} of ${pages.length}`);
+        await i.update({ embeds: [helpEmbed], components: [row] })
+      })
+
+      deleteEmbedCollector.on('collect', async i => {
+        if (msg) msg.delete()
+      })
+
     })
   }
 }
+

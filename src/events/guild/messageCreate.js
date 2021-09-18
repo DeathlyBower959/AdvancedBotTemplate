@@ -18,7 +18,7 @@ module.exports = async (client, Discord, message) => {
 
     //Check if message mentions bot only
     if (message.content === `<@!${message.client.user.id}>` || message.content === `<@${message.client.user.id}>`) {
-        message.delete();
+        if (message) message.delete();
         const forgotPrefixEmbed = new Discord.MessageEmbed()
             .setColor("YELLOW")
             .setTitle("Oops!")
@@ -50,7 +50,7 @@ module.exports = async (client, Discord, message) => {
 
     if (!message.content.startsWith(prefix) || !command) return;
 
-    message.delete();
+    if (message) message.delete();
 
     //Bot Perms
     let missingPerms = [];
