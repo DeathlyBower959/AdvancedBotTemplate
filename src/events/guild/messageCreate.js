@@ -152,7 +152,7 @@ module.exports = async (client, Discord, message) => {
         setTimeout(() => time_stamps.delete(message.author.id), cooldown_amount)
 
     }
-
+    
     try {
         command.execute(message, args, cmd, client, Discord, prefix);
     } catch (err) {

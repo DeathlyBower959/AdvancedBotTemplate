@@ -5,8 +5,10 @@ module.exports = {
   name: "help",
   description: "Lists all avaliable bot commands",
   aliases: ['h'],
-  cooldown: 0,
+  cooldown: 3,
   async execute(message, args, cmd, client, Discord, prefix) {
+
+    if (args[0]) console.log(args[0])
 
     const dirs = await jsonfile.readFileSync('./dirs.json')
 
@@ -32,9 +34,9 @@ module.exports = {
       //Loop through all commands in specified directory
       Object.keys(dirs[dirName]).forEach((fileName) => {
 
-        var desc = client.commands.get(fileName).description
-        var usage = client.commands.get(fileName).usage
-        var alia = client.commands.get(fileName).aliases
+        var desc = client.commands.get(fileName)?.description
+        var usage = client.commands.get(fileName)?.usage
+        var alia = client.commands.get(fileName)?.aliases
 
         if (usage && alia) {
           pages[dirIndex] += `\n**${prefix}${fileName}**\nDescription: ${desc}\nUsage: ${usage}\nAliases: ${alia}\n`
@@ -53,7 +55,6 @@ module.exports = {
     helpEmbed.setTitle('Help Page - ' + dirNames[0]) //Embed Title
     helpEmbed.setDescription(pages[0]) //Sets desc as default page
     helpEmbed.setFooter(`Page ${page} of ${pages.length}`) //Showing page location
-
 
     const firstPgBtn = new MessageButton()
       .setCustomId('firstPage')
@@ -81,6 +82,13 @@ module.exports = {
       .setCustomId('deleteEmbed')
       .setLabel('🗑️')
       .setStyle('DANGER')
+
+    if (pages.length == 1) {
+      firstPgBtn.setDisabled(true)
+      backPgBtn.setDisabled(true)
+      forwardPgBtn.setDisabled(true)
+      lastPgBtn.setDisabled(true)
+    }
 
     let row = new MessageActionRow()
       .addComponents(
@@ -149,7 +157,7 @@ module.exports = {
       })
 
       backPageCollector.on('collect', async i => {
-        await updateBtnVisibility(page-1)
+        await updateBtnVisibility(page - 1)
         if (page === 1) {
           i.deferUpdate()
           return;
@@ -162,7 +170,7 @@ module.exports = {
       })
 
       forwardPageCollector.on('collect', async i => {
-        await updateBtnVisibility(page+1)
+        await updateBtnVisibility(page + 1)
         if (page === pages.length) {
           i.deferUpdate()
           return;

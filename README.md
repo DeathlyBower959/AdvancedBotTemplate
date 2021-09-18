@@ -5,7 +5,7 @@
 # Installation
 To begin with, you need [node.js](https://nodejs.org) installed on your system.
 
-Once you have node.js installed continue.
+Once you have node.js installed, please continue.
 
 - Clone this repository somewhere on your machine.
 - Open a command prompt in the bots root directory
@@ -13,41 +13,37 @@ Once you have node.js installed continue.
 
 # Bot Setup
 - Go to the [Discord Dev](https://discord.com/developers/applications/) page
-- If you haven't created an application, then create one now, if you already have just click it
-- Go to the `Bot` tab on the left, if you haven't created one, create one now, and then copy the token
-- First create a new file named `.env`
-- Inside the file put the text
-```
-token=TOKEN_THAT_YOU_COPIED_EARLIER
-```
+- If you haven't created a new application, then create one now. Otherwise, just open the application
+- Go to the `Bot` tab on the left. If you haven't created a bot account yet, create one now, and then copy the token
+- Create a new file named `.env`
+- Inside the `.env` file, put the text `token=TOKEN_THAT_YOU_COPIED_EARLIER`
 - Open `config.json` and set the configs that you want
 - If all is well, then run `node .` or `node src/bot.js`
 
 # Invite Bot
 - Back at the [Discord Dev](https://discord.com/developers/applications/) page, click on your application and click `copy` under `Application ID`
-- Then replace the hastags in this link with your `Application ID` that you just copied <br>
-`https://discordapp.com/oauth2/authorize?client_id=############&scope=bot&permissions=8`
+- Then replace the hashtags in this link with your `Application ID` that you just copied <br>
+```
+https://discordapp.com/oauth2/authorize?client_id=############&scope=bot&permissions=8
+```
+- You can also use this [Discord Permissions Calculator](https://discordapi.com/permissions.html#0) and input your client id.
 
 # Using The Code
-*This is just a brief explanation of how to code works, to help you better understand how I decided to structure the code.*
+*This is just a brief explanation of how the code works to help you better understand how I decided to structure the code.*
 
 The `src` folder holds all the "code" for the discord bot. Outside of it is other extra stuff, like packages and configurations.
 
 In the `commands` folder, you can create new "categories" by creating new folders. These folders have to start with a number, and the reason for this is so the folders get organized the way you want them to.
 
-In each of the subfolders in the `commands` folder, is where you hold the commands themselves. The filenames and the `name` value must be the same.
+In each of the subfolders of the `commands` folder, you can hold the commands themselves. The filenames and the `name` value must be the same.
 
-The `events` folder contains events that happen in discord, such as a message being sent, or a button being clicked. The subfolders have no significance, just for organization.
+The `events` folder contains events that happen in discord, such as a message being sent, or a button being clicked. The subfolders mean that they will show up as a category in the help command.
 
-The `handlers` folder contains files that are run as soon as the bot starts, and registers all the events, commands, and interactions into collections, to then be later retrieved.
+The `handlers` folder contains files that are run as soon as the bot starts, and registers all the events and commands into collections to then be later retrieved.
 
-The `interactions` folder contains 2 subfolders, `buttons` and `select_menus`. Each of them have sub categories, for organization. When a button is clicked, or a select menu is triggered, it gets the id of the button/select menu and runs the corresponding event in the interactions folder, which has the same id.
+`bot.js` is the entry file, runs all the handler files, and logs the bot in using the token
 
-The `error.js` files in the interactions folder is only for when a button/select menu is triggered, but there is no matching id. It sends a message to the user and writes to the console.
-
-`bot.js` is the file that is run on startup, runs all the handler files, and logs the bot in using the token
-
-The `dirs.json` is for the help command, and allows it to show all of your commands, without you manually updating it.
+The `dirs.json` file is for the help command, and allows it to show all of your commands, without you manually updating it.
 
 # Code Templates
 
@@ -71,12 +67,53 @@ module.exports = {
 
 **New Button Collector:**
 ```js
+let button1 = new MessaMessageSelectMenugeButton()
+    .setCustomId('BUTTON_ID')
+    .setLabel('Sample Button')
+    .setStyle('PRIMARY')
+    
+const row = new MessageActionRow()
+    .addComponents(
+        button1
+    );
 
+await message.channel.send({ content: 'Sample', components: [row] }).then(msg => {
+    const sampleFilter = btn => btn.customId === 'BUTTON_ID' && btn.user.id === message.author.id;
+      const sampleFilterCollector = msg.createMessageComponentCollector({ filter: sampleFilter, time: 10000 }); //10 seconds to use the button
+
+      sampleFilterCollector.on('collect', async i => {
+        await i.update({ content: 'The button was clicked!', components: [row] })
+        i.deferUpdate();
+      })
+});
 ```
 
 **New Select Menu Collector:**
 ```js
+let menu1 = new MessageButton()
+    .setCustomId('SELECT_MENU_ID')
+        .setPlaceholder('Nothing selected')
+        .addOptions([{
+                label: 'Option 1',
+                description: 'A description',
+                value: 'OPTION_ID',
+            }
+        ])
+    
+const row = new MessageActionRow()
+    .addComponents(
+        menu1
+    );
 
+await message.channel.send({ content: 'Sample', components: [row] }).then(msg => {
+    const sampleFilter = menu => menu.customId === 'SELECT_MENU_ID' && btn.user.id === message.author.id;
+      const sampleFilterCollector = msg.createMessageComponentCollector({ filter: sampleFilter, time: 10000 }); //10 seconds to use the button
+
+      sampleFilterCollector.on('collect', async i => {
+        await i.update({ content: `Select Menu Option ID: ${i.value}`, components: [row] })
+        i.deferUpdate();
+      })
+});
 ```
 
 <hr>
@@ -104,7 +141,7 @@ const row = new MessageActionRow()
                 description: 'A description',
                 value: 'OPTION_ID',
             }
-        ]),
+        ])
     );
 ```
 
