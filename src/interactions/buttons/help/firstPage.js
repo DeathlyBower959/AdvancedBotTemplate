@@ -3,7 +3,7 @@ const { MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.
 module.exports = {
     id: "firstPage",
     async execute(interaction) {
-        
+
         interaction.deferUpdate();
         return;
     },

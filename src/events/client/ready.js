@@ -106,7 +106,7 @@ spaces: 2
 module.exports = async (CLIENT, DISCORD) => {
     console.log('Bot is online!')
 
-    client = CLIENT;
+    client = CLIENT
     Discord = DISCORD
 
     setStatuses()

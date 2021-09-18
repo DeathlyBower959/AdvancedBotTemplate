@@ -10,7 +10,7 @@ const cooldowns = new Map();
 let validPermissions = []
 
 for (const perm of Object.keys(Permissions.FLAGS)) {
-  validPermissions.push(perm)
+    validPermissions.push(perm)
 }
 
 module.exports = async (client, Discord, message) => {
@@ -23,8 +23,8 @@ module.exports = async (client, Discord, message) => {
             .setColor("YELLOW")
             .setTitle("Oops!")
             .setDescription(`Looks like you forgot the prefix! \nMy prefix is \`${prefix}\``)
-        return message.channel.send({embeds: [forgotPrefixEmbed]}).then(msg => {
-            setTimeout(function() {
+        return message.channel.send({ embeds: [forgotPrefixEmbed] }).then(msg => {
+            setTimeout(function () {
                 if (msg) msg.delete()
             }, 8000)
         });
@@ -40,8 +40,8 @@ module.exports = async (client, Discord, message) => {
                 .setColor("RED")
                 .setTitle("Sorry!")
                 .setDescription(`You can't use this command!`)
-            return message.channel.send({embeds: [onlyDebugEmbed]}).then(msg => {
-                setTimeout(function() {
+            return message.channel.send({ embeds: [onlyDebugEmbed] }).then(msg => {
+                setTimeout(function () {
                     if (msg) msg.delete()
                 }, 8000)
             });
@@ -51,7 +51,7 @@ module.exports = async (client, Discord, message) => {
     if (!message.content.startsWith(prefix) || !command) return;
 
     message.delete();
-    
+
     //Bot Perms
     let missingPerms = [];
     let requiredPerms = [];
@@ -78,7 +78,7 @@ module.exports = async (client, Discord, message) => {
             .setDescription(`Sorry, there was an error running that command! I am missing the permission[s]\n${missingPerms.map(p => `\`${p}\``).join(", ")}`)
 
 
-        return message.author.send({embeds: [missingPermsEmbed]})
+        return message.author.send({ embeds: [missingPermsEmbed] })
     }
 
     //User Perms
@@ -98,8 +98,8 @@ module.exports = async (client, Discord, message) => {
                 .setTitle("Error")
                 .setDescription(`Sorry you are missing these permission[s]\n${missingPerms.map(p => `\`${p}\``).join(", ")}`)
 
-            return message.channel.send({embeds: [missingPermsEmbed]}).then(msg => {
-                setTimeout(function() {
+            return message.channel.send({ embeds: [missingPermsEmbed] }).then(msg => {
+                setTimeout(function () {
                     if (msg) msg.delete()
                 }, 15000)
             });
@@ -140,8 +140,8 @@ module.exports = async (client, Discord, message) => {
                 }
 
 
-                return message.channel.send({embeds: [cooldownEmbed]}).then(msg => {
-                    setTimeout(function() {
+                return message.channel.send({ embeds: [cooldownEmbed] }).then(msg => {
+                    setTimeout(function () {
                         if (msg) msg.delete()
                     }, 5000)
                 });
@@ -157,12 +157,13 @@ module.exports = async (client, Discord, message) => {
         command.execute(message, args, cmd, client, Discord, prefix);
     } catch (err) {
         console.log(err);
+        console.log(`Guild: ${message.guild.name}\nChannel: "${message.channel.name}"\nMessage: ${message.content}\nCommand: "${cmd}"`)
         const errorRunCmd = new Discord.MessageEmbed()
             .setColor("RED")
             .setTitle("Error")
             .setDescription(`Sorry there was an error running that command!\n\`\`\`err\n${err}\n\`\`\``)
-        await message.channel.send({embeds: [errorRunCmd]}).then(msg => {
-            setTimeout(function() {
+        await message.channel.send({ embeds: [errorRunCmd] }).then(msg => {
+            setTimeout(function () {
                 if (msg) msg.delete()
             }, 4000)
         });
