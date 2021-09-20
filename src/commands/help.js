@@ -37,20 +37,18 @@ module.exports = {
       Object.keys(dirs[dirName]).forEach((fileName) => {
 
         let argsIndex = 0;
-        const getSubCmd = (parentObject) => {
+        const getSubCmd = (parentObject, key) => {
           if (!args[argsIndex]) return false
-          Object.keys(parentObject)?.find(key => {
-            if (key.toLowerCase() == args[0].toLowerCase()) {
-              subCommandName = key
-              return true;
-            }
-          })
+          if (key.toLowerCase() == args[0].toLowerCase()) {
+            subCommandName = key
+            return true;
+          }
           argsIndex++
           return getSubCmd(args[argsIndex]);
         }
 
         if (args[0]) {
-          subCommandHelp = getSubCmd(dirs[dirName])
+          subCommandHelp = dirs[dirName][Object.keys(dirs[dirName])?.find(key => getSubCmd(key))]
         }
 
 
