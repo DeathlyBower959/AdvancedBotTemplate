@@ -4,8 +4,17 @@ module.exports = {
 	name: "select",
 	description: "A sample Select Menu example",
 	cooldown: 0, // Optional
+	subcommandsDir: 'select',
+	subcommands: [require('./select/test')],
 	onlyDebug: true,
 	async execute(message, args, cmd, client, Discord, prefix) {
+		
+		const subCmd = client.commands.get(cmd).subcmds.find(x => x.cmd.name.toLowerCase() == args[0].toString().toLowerCase())?.cmd
+		if (subCmd) {
+			subCmd.execute(message, args, cmd, client, Discord, prefix)
+			return;
+		}
+
 		let menu1 = new MessageSelectMenu()
 			.setCustomId('sample')
 			.setPlaceholder('Nothing selected')

@@ -154,7 +154,7 @@ module.exports = async (client, Discord, message) => {
     }
     
     try {
-        command.execute(message, args, cmd, client, Discord, prefix);
+        command.cmd.execute(message, args, cmd, client, Discord, prefix);
     } catch (err) {
         console.log(err);
         console.log(`Guild: ${message.guild.name}\nChannel: "${message.channel.name}"\nMessage: ${message.content}\nCommand: "${cmd}"`)

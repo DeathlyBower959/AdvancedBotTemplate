@@ -3,11 +3,28 @@ const ascii = require("ascii-table");
 
 module.exports = (client, Discord) => {
     let tables = []
+    const getAllSubCmds = (cmd) => {
+        let subCmds = [];
+        if (cmd.subcommandsDir && cmd.subcommands) {
+            cmd.subcommands.forEach(item => {
+                let cmdObject = { cmd: item }
+                const cmdSubCmds = getAllSubCmds(cmd.subcommands)
+                if (cmdSubCmds != null)
+                    cmdObject = cmdSubCmds
+
+                subCmds.push(cmdObject)
+            })
+            return subCmds
+        }
+
+        return null;
+    }
+
     const load_dir = (dir) => {
         try {
             let table = new ascii(dir == '' ? "Commands" : dir);
             table.setHeading("Command", "Load status");
-            
+
             const command_files = fs
                 .readdirSync(`src/commands/${dir}`)
                 .filter(file => file.endsWith('.js'));
@@ -15,7 +32,11 @@ module.exports = (client, Discord) => {
             for (const file of command_files) {
                 const command = require(`../commands/${dir}/${file}`);
                 if (command.name) {
-                    client.commands.set(command.name, command);
+                    let cmdObject = { cmd: command };
+                    if (command.subcommandsDir && command.subcommands) {
+                        cmdObject.subcmds = getAllSubCmds(command)
+                    }
+                    client.commands.set(command.name, cmdObject);
                     table.addRow(command.name, "🟢 Loaded");
                 } else {
                     table.addRow(file, "🔴 No command name!");
@@ -25,7 +46,7 @@ module.exports = (client, Discord) => {
             if (table.getRows().length > 0)
                 tables.push(table.toString().cyan)
         } catch (e) {
-            console.log(String(e.stack));
+            console.log((e.stack).toString());
         }
     }
 

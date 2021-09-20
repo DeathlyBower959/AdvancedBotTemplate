@@ -10,8 +10,6 @@ const client = new Client({
 });
 
 client.commands = new Collection();
-client.buttonInteractions = new Collection();
-client.selectInteractions = new Collection();
 client.slashCommands = new Collection();
 
 client.consoleLogs = []

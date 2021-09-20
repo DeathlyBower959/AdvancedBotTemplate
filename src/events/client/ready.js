@@ -1,6 +1,8 @@
 const fs = require('fs');
 const jsonfile = require('jsonfile');
 const { prefix, statusDelay, statuses } = require("../../../config.json");
+const { subcommands } = require('../../commands/1Sample/select');
+
 
 let client, Discord
 
@@ -55,6 +57,23 @@ const setStatuses = async () => {
     }
 }
 
+const getAllSubCmds = (cmd) => {
+    let subCmds = [];
+    if (cmd.subcommandsDir && cmd.subcommands) {
+        cmd.subcommands.forEach(item => {
+            let cmdObject = { cmd: item }
+            const cmdSubCmds = getAllSubCmds(cmd.subcommands)
+            if (cmdSubCmds != null)
+                cmdObject = cmdSubCmds
+
+            subCmds.push(cmdObject)
+        })
+        return subCmds
+    }
+
+    return null;
+}
+
 const setHelp = async () => {
     // Help commands
     var dirs = {}
@@ -71,31 +90,21 @@ const setHelp = async () => {
         dirCmds.forEach(file => {
             let fileName = file.split('.')[0]
 
-            let desc = client.commands.get(fileName)?.description
-            let usage = client.commands.get(fileName)?.usage
-            let alia = client.commands.get(fileName)?.aliases
+            const retreivedCmd = client.commands.get(fileName)?.cmd
 
-            if (usage && alia) {
-                dirs[dir.substring(1)][fileName] = {
-                    "Description": desc,
-                    "Usage": usage,
-                    "Aliases": alia
-                }
-            } else if (usage) {
-                dirs[dir.substring(1)][fileName] = {
-                    "Description": desc,
-                    "Usage": usage
-                }
-            } else if (alia) {
-                dirs[dir.substring(1)][fileName] = {
-                    "Description": desc,
-                    "Aliases": alia
-                }
-            } else {
-                dirs[dir.substring(1)][fileName] = {
-                    "Description": desc
-                }
-            }
+            let desc = retreivedCmd?.description
+            let usage = retreivedCmd?.usage
+            let alia = retreivedCmd?.aliases
+            let subCmds = client.commands.get(fileName)?.subcmds
+
+            let pushObject = {}
+
+            if (desc) pushObject["Description"] = desc
+            if (usage) pushObject["Usage"] = usage
+            if (alia) pushObject["Aliases"] = alia
+            if (subCmds) pushObject["SubCommands"] = subCmds
+
+            dirs[dir.substring(1)][fileName] = pushObject
 
         })
     })
