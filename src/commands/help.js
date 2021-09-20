@@ -36,15 +36,12 @@ module.exports = {
       //Loop through all commands in specified directory
       Object.keys(dirs[dirName]).forEach((fileName) => {
 
-        let argsIndex = 0;
-        const getSubCmd = (parentObject, key) => {
-          if (!args[argsIndex]) return false
+        const getSubCmd = (key) => {
           if (key.toLowerCase() == args[0].toLowerCase()) {
             subCommandName = key
             return true;
           }
-          argsIndex++
-          return getSubCmd(args[argsIndex]);
+          return false;
         }
 
         if (args[0]) {
