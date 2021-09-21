@@ -1,7 +1,9 @@
 module.exports = {
-    name: "subcmd",
+    name: "test",
     description: "a subcmd to select",
     cooldown: 3, // Optional
+    subcommandsDir: 'testing',
+	subcommands: [require('./testing/what')],
     async execute(message, args, cmd, client, Discord, prefix) {
   
       const timeTaken = Date.now() - message.createdTimestamp;

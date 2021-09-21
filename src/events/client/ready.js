@@ -57,23 +57,6 @@ const setStatuses = async () => {
     }
 }
 
-const getAllSubCmds = (cmd) => {
-    let subCmds = [];
-    if (cmd.subcommandsDir && cmd.subcommands) {
-        cmd.subcommands.forEach(item => {
-            let cmdObject = { cmd: item }
-            const cmdSubCmds = getAllSubCmds(cmd.subcommands)
-            if (cmdSubCmds != null)
-                cmdObject = cmdSubCmds
-
-            subCmds.push(cmdObject)
-        })
-        return subCmds
-    }
-
-    return null;
-}
-
 const setHelp = async () => {
     // Help commands
     var dirs = {}

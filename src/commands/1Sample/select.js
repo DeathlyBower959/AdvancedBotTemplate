@@ -8,8 +8,8 @@ module.exports = {
 	subcommands: [require('./select/test')],
 	onlyDebug: true,
 	async execute(message, args, cmd, client, Discord, prefix) {
-		
-		const subCmd = client.commands.get(cmd).subcmds.find(x => x.cmd.name.toLowerCase() == args[0].toString().toLowerCase())?.cmd
+
+		const subCmd = client.commands.get(cmd).subcmds.find(x => x.cmd.name.toLowerCase() == args[0]?.toString().toLowerCase())?.cmd
 		if (subCmd) {
 			subCmd.execute(message, args, cmd, client, Discord, prefix)
 			return;

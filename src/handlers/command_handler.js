@@ -3,18 +3,22 @@ const ascii = require("ascii-table");
 
 module.exports = (client, Discord) => {
     let tables = []
+    
     const getAllSubCmds = (cmd) => {
-        let subCmds = [];
+        let subCmds = []
         if (cmd.subcommandsDir && cmd.subcommands) {
             cmd.subcommands.forEach(item => {
                 let cmdObject = { cmd: item }
-                const cmdSubCmds = getAllSubCmds(cmd.subcommands)
+                const cmdSubCmds = getAllSubCmds(item)
                 if (cmdSubCmds != null)
-                    cmdObject = cmdSubCmds
+                    cmdObject.subcmds = cmdSubCmds
 
                 subCmds.push(cmdObject)
             })
-            return subCmds
+            if (subCmds.length > 0)
+                return subCmds
+            else 
+                return null
         }
 
         return null;
@@ -32,7 +36,7 @@ module.exports = (client, Discord) => {
             for (const file of command_files) {
                 const command = require(`../commands/${dir}/${file}`);
                 if (command.name) {
-                    let cmdObject = { cmd: command };
+                    let cmdObject = { cmd: command, parentDir: dir };
                     if (command.subcommandsDir && command.subcommands) {
                         cmdObject.subcmds = getAllSubCmds(command)
                     }

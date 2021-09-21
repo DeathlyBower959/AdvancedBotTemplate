@@ -1,9 +1,9 @@
 const jsonfile = require('jsonfile');
 const { MessageButton, MessageActionRow } = require('discord.js');
 module.exports = {
-  name: "help",
+  name: "help2",
   description: "Lists all avaliable bot commands",
-  aliases: ['h'],
+  aliases: ['h2'],
   cooldown: 3,
   async execute(message, args, cmd, client, Discord, prefix) {
 
@@ -20,12 +20,45 @@ module.exports = {
     const helpEmbed = new Discord.MessageEmbed() //Create new embed
       .setColor("RED") //Embed Color
 
-
-
     let dirIndex = 0
 
     let subCommandHelp;
     let subCommandName;
+
+    const getSubCmds = (cmd) => {
+      let subCmds = []
+      if (cmd.subcmds) {
+        cmd.subcmds.forEach(item => {
+          let cmdObject = item
+          const cmdSubCmds = getSubCmds(item)
+          if (cmdSubCmds != null)
+            cmdObject.subcmds = cmdSubCmds
+
+          subCmds.push(cmdObject)
+        })
+        if (subCmds.length > 0)
+          return subCmds
+        else
+          return null
+      }
+
+      return null;
+    }
+
+    if (args[0]) {
+      const retreivedCommand = client.commands.find(cmd => cmd.cmd.name.toLowerCase() == args[0].toLowerCase())
+      if (retreivedCommand) {
+        let argsIndex = 1
+        args.forEach(arg => {
+          
+          if (retreivedCommand.subcmds[0].name == arg) {
+
+          }
+
+          argsIndex++;
+        })
+      }
+    }
 
     //Loop through command directories
     Object.keys(dirs).forEach((dirName) => {
@@ -35,20 +68,6 @@ module.exports = {
 
       //Loop through all commands in specified directory
       Object.keys(dirs[dirName]).forEach((fileName) => {
-
-        const getSubCmd = (key) => {
-          if (key.toLowerCase() == args[0].toLowerCase()) {
-            subCommandName = key
-            return true;
-          }
-          return false;
-        }
-
-        if (args[0]) {
-          subCommandHelp = dirs[dirName][Object.keys(dirs[dirName])?.find(key => getSubCmd(key))]
-        }
-
-
 
         let fileData = dirs[dirName][fileName]
 
@@ -74,8 +93,6 @@ module.exports = {
 
       helpEmbed.setTitle(`${subCommandName}`) //Embed Title
       helpEmbed.setDescription(subCommandHelp.SubCommands?.map(x => `\`${x.cmd.name}\` `).join('')) //Sets desc as default page
-
-
 
       const deletePgBtn = new MessageButton()
         .setCustomId('deleteEmbed')
