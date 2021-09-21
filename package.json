@@ -5,6 +5,9 @@
   "main": "src/bot.js",
   "author": "DeathlyBower959",
   "license": "ISC",
+  "scripts": {
+    "cooldown": "node scripts/calculateCooldown.js"
+  },
   "dependencies": {
     "ascii-table": "^0.0.9",
     "colors": "^1.4.0",

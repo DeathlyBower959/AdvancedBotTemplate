@@ -45,33 +45,14 @@ module.exports = {
             return null;
         }
 
-        const secondsToDhms = (seconds) => {
-            seconds = Number(seconds);
-            let w = Math.floor(seconds % ((3600 * 24) * 7) / 3600);
-            let d = Math.floor(seconds % (3600 * 24) / 3600);
-            let h = Math.floor(seconds % (3600 * 24) / 3600);
-            let m = Math.floor(seconds % 3600 / 60);
-            let s = Math.floor(seconds % 60);
-            
-            let wDisplay = w > 0 ? w + 'w, ' : "";
-            let dDisplay = d > 0 ? d + 'd, ' : "";
-            let hDisplay = h > 0 ? h + 'h, ' : "";
-            let mDisplay = m > 0 ? m + 'm, ' : "";
-            let sDisplay = s > 0 ? s + 's' : "";
-
-            return wDisplay + dDisplay + hDisplay + mDisplay + sDisplay;
-        }
-
         const getCmdData = (cmd) => {
             const fileName = cmd.cmd.name
             const desc = cmd.cmd.description
             const usage = cmd.cmd.usage
             const aliases = cmd.cmd.aliases?.map(x => `${x} `)
-            let cooldown = cmd.cmd.cooldown
+            const cooldown = secondsToDhms(cmd.cmd.cooldown)
             const subCommands = cmd.subcmds?.map(x => `\`${x.cmd.name}\``)
             const parentDirectory = cmd.parentDir
-
-            if (cooldown) cooldown = secondsToDhms(9081273987)
 
             return {
                 name: fileName,
@@ -84,8 +65,28 @@ module.exports = {
             }
         }
 
+        const secondsToDhms = (seconds) => {
+            if (!seconds) return
+            seconds = Number(seconds);
+            let w = Math.floor(seconds % ((3600 * 24) * 7) / 3600);
+            let d = Math.floor(seconds % (3600 * 24) / 3600);
+            let h = Math.floor(seconds % (3600 * 24) / 3600);
+            let m = Math.floor(seconds % 3600 / 60);
+            let s = Math.floor(seconds % 60);
+
+            let wDisplay = w > 0 ? w + 'w, ' : "";
+            let dDisplay = d > 0 ? d + 'd, ' : "";
+            let hDisplay = h > 0 ? h + 'h, ' : "";
+            let mDisplay = m > 0 ? m + 'm, ' : "";
+            let sDisplay = s > 0 ? s + 's' : "";
+
+            return wDisplay + dDisplay + hDisplay + mDisplay + sDisplay;
+        }
+
         let previousParentDirectory = ''
         let firstPage = true
+
+        // When there are 2 folders, it doesnt create multiple embed pages
 
         client.commands.forEach(cmd => {
             if (getCmdData(cmd)?.parentDir == '') return //Excludes commands not in a sub directory
@@ -220,7 +221,7 @@ module.exports = {
                     return;
                 } //Make sure on the first page, and return so you cant go back.
                 currentPage = 1;
-                helpEmbed.setTitle(folderNames[0]);
+                helpEmbed.setTitle(folderNames[0].substring(1, folderNames[0].length));
                 helpEmbed.setDescription(embedPages[0]);
                 helpEmbed.setFooter(`Page ${currentPage} of ${embedPages.length}`);
                 await i.update({ embeds: [helpEmbed], components: [row] })
@@ -233,7 +234,7 @@ module.exports = {
                     return;
                 } //Make sure on the first page, and return so you cant go back.
                 currentPage--; //If it can go back, move back a page number
-                helpEmbed.setTitle(folderNames[currentPage - 1]);
+                helpEmbed.setTitle(folderNames[currentPage - 1].substring(1, folderNames[currentPage - 1].length));
                 helpEmbed.setDescription(embedPages[currentPage - 1]);
                 helpEmbed.setFooter(`Page ${currentPage} of ${embedPages.length}`);
                 await i.update({ embeds: [helpEmbed], components: [row] })
@@ -246,7 +247,7 @@ module.exports = {
                     return;
                 } //Make sure on the last page, and return so you cant go forward.
                 currentPage++; //If it can go forward, move forward a page number
-                helpEmbed.setTitle(folderNames[currentPage - 1]);
+                helpEmbed.setTitle(folderNames[currentPage - 1].substring(1, folderNames[currentPage - 1].length));
                 helpEmbed.setDescription(embedPages[currentPage - 1]);
                 helpEmbed.setFooter(`Page ${currentPage} of ${embedPages.length}`);
                 await i.update({ embeds: [helpEmbed], components: [row] })
@@ -259,7 +260,7 @@ module.exports = {
                     return;
                 } //Make sure on the last page, and return so you cant go forward.
                 currentPage = embedPages.length
-                helpEmbed.setTitle(folderNames[currentPage - 1]);
+                helpEmbed.setTitle(folderNames[currentPage - 1].substring(1, folderNames[currentPage - 1].length));
                 helpEmbed.setDescription(embedPages[currentPage - 1]);
                 helpEmbed.setFooter(`Page ${currentPage} of ${embedPages.length}`);
                 await i.update({ embeds: [helpEmbed], components: [row] })
