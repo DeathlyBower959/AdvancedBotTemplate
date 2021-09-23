@@ -45,6 +45,9 @@ The `handlers` folder contains files that are run as soon as the bot starts, and
 
 The `dirs.json` file is for the help command, and allows it to show all of your commands, without you manually updating it.
 
+# Scripts
+ - `npm run cooldown` : Calculates the amount of seconds to use as a cooldown in a given timeframe
+
 # Code Templates
 
 **New Command:**
@@ -148,8 +151,8 @@ const row = new MessageActionRow()
 
 # Important Links
 - [Discord.js Documentation](https://discord.js.org/#/docs)
-- [Discord.js server](https://discord.gg/bRCvFy9)
+- [Discord.js Server](https://discord.gg/bRCvFy9)
 
 # Author
-- Discord: DeathlyBower959 [YT]#2561
+- Discord: [DeathlyBower959 [YT]#2561](https://discordapp.com/users/689284642184101970)
 - YouTube: <https://www.youtube.com/channel/DeathlyBower959>
