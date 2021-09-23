@@ -4,7 +4,7 @@ module.exports = {
 	name: "select",
 	description: "A sample Select Menu example",
 	cooldown: 0, // Optional
-	subcommands: [require('./select/test')],
+	subcommands: [require('./subCommand/cmdWithSubCmd')],
 	onlyDebug: true,
 	async execute(message, args, cmd, client, Discord, prefix) {
 
