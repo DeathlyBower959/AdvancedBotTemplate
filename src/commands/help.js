@@ -11,7 +11,7 @@ module.exports = {
 
         //Array that holds text for each embed page (Not fields becus lazy)
         let embedPages = []
-
+         
         //Current Embed Page Index
         let currentPage = 1
 
