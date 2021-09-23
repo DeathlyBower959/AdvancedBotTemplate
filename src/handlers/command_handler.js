@@ -6,7 +6,7 @@ module.exports = (client, Discord) => {
     
     const getAllSubCmds = (cmd) => {
         let subCmds = []
-        if (cmd.subcommandsDir && cmd.subcommands) {
+        if (cmd.subcommands) {
             cmd.subcommands.forEach(item => {
                 let cmdObject = { cmd: item }
                 const cmdSubCmds = getAllSubCmds(item)
@@ -37,7 +37,7 @@ module.exports = (client, Discord) => {
                 const command = require(`../commands/${dir}/${file}`);
                 if (command.name) {
                     let cmdObject = { cmd: command, parentDir: dir };
-                    if (command.subcommandsDir && command.subcommands) {
+                    if (command.subcommands) {
                         cmdObject.subcmds = getAllSubCmds(command)
                     }
                     client.commands.set(command.name, cmdObject);
