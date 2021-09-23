@@ -2,9 +2,10 @@ module.exports = {
     name: "endcmd",
     description: "Ending Sub command",
     cooldown: 3, // Optional
-    async execute(message, args, cmd, client, Discord, prefix) {
+    onlyDebug: true,
+    async execute(message, args, cmd, client, Discord, prefix, currentCmd, parentCommand) {
   
-      message.channel.send({ content: `A subcommand of ${cmd} was run!` })
+      message.channel.send({ content: `A subcommand3 of **${parentCommand.cmd.name}** was run!` })
   
     }
   }
