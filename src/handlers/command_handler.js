@@ -1,28 +1,11 @@
+require('module-alias/register')
+const { runSubCmd, getAllSubCmds } = require('@utils/subCommands')
+
 const fs = require('fs')
 const ascii = require("ascii-table");
 
 module.exports = (client, Discord) => {
     let tables = []
-    
-    const getAllSubCmds = (cmd) => {
-        let subCmds = []
-        if (cmd.subcommands) {
-            cmd.subcommands.forEach(item => {
-                let cmdObject = { cmd: item }
-                const cmdSubCmds = getAllSubCmds(item)
-                if (cmdSubCmds != null)
-                    cmdObject.subcmds = cmdSubCmds
-
-                subCmds.push(cmdObject)
-            })
-            if (subCmds.length > 0)
-                return subCmds
-            else 
-                return null
-        }
-
-        return null;
-    }
 
     const load_dir = (dir) => {
         try {
@@ -53,6 +36,7 @@ module.exports = (client, Discord) => {
             console.log((e.stack).toString());
         }
     }
+
 
     //Load Files that arent in a sub folder
     load_dir('')

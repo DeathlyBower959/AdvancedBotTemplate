@@ -1,8 +1,9 @@
+require('module-alias/register')
+
 const fs = require("fs");
 const Discord = require("discord.js");
 const { Client, Collection, Intents } = require("discord.js");
-const jsonfile = require('jsonfile');
-const colors = require("colors");
+require("colors"); //Coloring the console with .red .gray etc
 require('dotenv').config()
 
 const client = new Client({
@@ -19,7 +20,7 @@ const handlerFiles = fs
     .filter(file => file.endsWith(".js"));
 
 handlerFiles.forEach(handler => {
-    require(`./handlers/${handler}`)(client, Discord);
+    require(`@handlers/${handler}`)(client, Discord);
 })
 
 client.login(process.env.token)

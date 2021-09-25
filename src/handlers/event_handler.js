@@ -1,3 +1,6 @@
+require('module-alias/register')
+
+
 const fs = require('fs');
 const ascii = require("ascii-table");
 
@@ -13,7 +16,7 @@ module.exports = (client, Discord) => {
                 .filter(file => file.endsWith('.js'))
 
             for (const file of event_files) {
-                const event = require(`../events/${dir}/${file}`);
+                const event = require(`@events/${dir}/${file}`);
                 const event_name = file.split('.')[0]
 
                 if (event) {
@@ -34,7 +37,7 @@ module.exports = (client, Discord) => {
     load_dir('')
 
     const eventDirs = fs
-		.readdirSync("src/events")
+		.readdirSync('src/events')
 		.filter(dir => fs.lstatSync(`src/events/${dir}`).isDirectory());
 
     //console.log(`\n>--------Events--------<`)
@@ -44,5 +47,3 @@ module.exports = (client, Discord) => {
         value: tables
     })
 }
-
-//select_menus_handler.js

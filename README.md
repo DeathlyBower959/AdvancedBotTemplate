@@ -15,9 +15,12 @@ Once you have node.js installed, please continue.
 - Go to the [Discord Dev](https://discord.com/developers/applications/) page
 - If you haven't created a new application, then create one now. Otherwise, just open the application
 - Go to the `Bot` tab on the left. If you haven't created a bot account yet, create one now, and then copy the token
-- Create a new file named `.env`
-- Inside the `.env` file, put the text `token=TOKEN_THAT_YOU_COPIED_EARLIER`
+- Rename the file `template.env` to `.env`
+- Inside the `.env` file, change the token to your token: `token=TOKEN_THAT_YOU_COPIED_EARLIER`
 - Open `config.json` and set the configs that you want
+- Back on the [Discord Dev](https://discord.com/developers/applications/) page, scroll down and choose the permissions you want your bot to have
+- Copy the `PERMISSIONS INTEGER`
+- Paste the permissions integer into the `config.json`
 - If all is well, then run `node .` or `node src/bot.js`
 
 # Invite Bot
@@ -33,17 +36,19 @@ https://discordapp.com/oauth2/authorize?client_id=############&scope=bot&permiss
 
 The `src` folder holds all the "code" for the discord bot. Outside of it is other extra stuff, like packages and configurations.
 
-In the `commands` folder, you can create new "categories" by creating new folders. These folders have to start with a number, and the reason for this is so the folders get organized the way you want them to.
+In the `commands` folder, you can create new "categories" by creating new folders. These folders have to start with a number, and the reason for this is so the folders get organized the way you want them to for the help command.
 
 In each of the subfolders of the `commands` folder, you can hold the commands themselves. The filenames and the `name` value must be the same.
 
-The `events` folder contains events that happen in discord, such as a message being sent, or a button being clicked. The subfolders mean that they will show up as a category in the help command.
+The subfolders mean that they will show up as a category in the help command.
+
+In those subfolders, you can add more folders, which refer to `sub commands` of a the original command. I have a tempalte folder so you can see what I mean.
+
+The `events` folder contains events that happen in discord, such as a message being sent, or a button being clicked.
 
 The `handlers` folder contains files that are run as soon as the bot starts, and registers all the events and commands into collections to then be later retrieved.
 
 `bot.js` is the entry file, runs all the handler files, and logs the bot in using the token
-
-The `dirs.json` file is for the help command, and allows it to show all of your commands, without you manually updating it.
 
 # Scripts
  - `npm run cooldown` : Calculates the amount of seconds to use as a cooldown in a given timeframe
@@ -52,25 +57,67 @@ The `dirs.json` file is for the help command, and allows it to show all of your 
 
 **New Command:**
 ```js
+//Helpful Imports
+require('module-alias/register')
+const { runSubCmd, getAllSubCmds } = require('@utils/subCommands')
+const { MessageButton, MessageActionRow } = require('discord.js');
+
 module.exports = {
     name: "FILE_NAME",
     description: "A description",
     
     aliases: [], //Optional (Defaults to none)
+    botPerms: [], //Optional
+    permissions: [], //Optional (Permissions for the user)
     usage: "", //Optional
     cooldown: 3, //Optional (Defaults to 0)
+    subcommands: [require('./folder/subCmdFileName')],
     onlyDebug: true, //Optional (Defaults to false)
     async execute(message, args, cmd, client, Discord, prefix) {
   
+        //Runs a subcommand
+        if (runSubCmd(client.commands.get(cmd), args, { message: message, cmd: cmd, client: client, Discord: Discord, prefix: prefix }))
+            return
+
       //Your code in here
   
     }
 }
 ```
 
+**New Sub Command**
+```js
+//Helpful Imports
+require('module-alias/register')
+const { runSubCmd, getAllSubCmds } = require('@utils/subCommands')
+const { MessageButton, MessageActionRow } = require('discord.js');
+
+module.exports = {
+  name: "FILE_NAME",
+  description: "A description",
+    
+    aliases: [], //Optional (Defaults to none)
+    botPerms: [], //Optional
+    permissions: [], //Optional (Permissions for the user)
+    usage: "", //Optional
+    cooldown: 3, //Optional (Defaults to 0)
+    subcommands: [require('./folder/subCmdFileName')],
+    onlyDebug: true, //Optional (Defaults to false)
+  async execute(message, args, cmd, client, Discord, prefix, currentCmd, parentCommand, argsIndex) {
+
+    if (runSubCmd(currentCmd, args, { message: message, cmd: cmd, client: client, Discord: Discord, prefix: prefix }, argsIndex))
+      return
+
+    //Your code here
+
+  }
+}
+
+```
+
 **New Button Collector:**
 ```js
-let button1 = new MessaMessageSelectMenugeButton()
+let button1 = new MessageButton()
     .setCustomId('BUTTON_ID')
     .setLabel('Sample Button')
     .setStyle('PRIMARY')
@@ -86,14 +133,17 @@ await message.channel.send({ content: 'Sample', components: [row] }).then(msg =>
 
       sampleFilterCollector.on('collect', async i => {
         await i.update({ content: 'The button was clicked!', components: [row] })
-        i.deferUpdate();
       })
+
+      sampleFilterCollector.on('end', async i => {
+				await i.update({ content: `This interaction has timed out! Try running the command again`})
+			})
 });
 ```
 
 **New Select Menu Collector:**
 ```js
-let menu1 = new MessageButton()
+let menu1 = new MessageSelectMenu()
     .setCustomId('SELECT_MENU_ID')
         .setPlaceholder('Nothing selected')
         .addOptions([{
@@ -109,13 +159,16 @@ const row = new MessageActionRow()
     );
 
 await message.channel.send({ content: 'Sample', components: [row] }).then(msg => {
-    const sampleFilter = menu => menu.customId === 'SELECT_MENU_ID' && btn.user.id === message.author.id;
+    const sampleFilter = menu => menu.customId === 'SELECT_MENU_ID' && menu.user.id === message.author.id;
       const sampleFilterCollector = msg.createMessageComponentCollector({ filter: sampleFilter, time: 10000 }); //10 seconds to use the button
 
       sampleFilterCollector.on('collect', async i => {
         await i.update({ content: `Select Menu Option ID: ${i.value}`, components: [row] })
-        i.deferUpdate();
       })
+
+      sampleFilterCollector.on('end', async i => {
+				await i.update({ content: `This interaction has timed out! Try running the command again`})
+			})
 });
 ```
 

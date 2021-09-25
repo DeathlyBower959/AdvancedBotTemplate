@@ -1,7 +1,11 @@
-const { prefix, owner } = require("../../../config.json");
+//Helpful Imports
+require('module-alias/register')
+
+
+const { prefix, owner } = require('@root/config.json');
 
 //Require Permissions From Discord.js instead of Discord.Permissions
-const { Permissions, DiscordAPIError } = require('discord.js')
+const { Permissions } = require('discord.js')
 
 //Cooldown Map
 const cooldowns = new Map();
@@ -33,7 +37,7 @@ module.exports = async (client, Discord, message) => {
     const args = message.content.slice(prefix.length).split(/ +/);
     const cmd = args.shift().toLowerCase();
 
-    const command = client.commands.get(cmd) || client.commands.find(a => a.aliases && a.aliases.includes(cmd))
+    const command = client.commands.get(cmd) || client.commands.find(a => a.cmd.aliases && a.cmd.aliases.includes(cmd))
     if (command) {
         if (command.onlyDebug && message.author.id != owner) {
             const onlyDebugEmbed = new Discord.MessageEmbed()
@@ -63,7 +67,7 @@ module.exports = async (client, Discord, message) => {
     requiredPerms.push(validPermissions[validPermissions.indexOf("USE_EXTERNAL_EMOJIS")]);
     requiredPerms.push(validPermissions[validPermissions.indexOf("READ_MESSAGE_HISTORY")]);
 
-    for (const perm of requiredPerms) {
+    for (const perm of new Set(requiredPerms)) { //Converted to set for duplicate items
         if (!validPermissions.includes(perm)) {
             return console.log(`Invalid Permission ${perm} in ${command.name}`)
         }
@@ -84,7 +88,7 @@ module.exports = async (client, Discord, message) => {
     //User Perms
     if (command.permissions) {
         let missingPerms = []
-        for (const perm of command.permissions) {
+        for (const perm of new Set(command.permissions)) {  //Converted to set for duplicate items
             if (!validPermissions.includes(perm)) {
                 return console.log(`Invalid Permission ${perm} in ${command.name}`)
             }

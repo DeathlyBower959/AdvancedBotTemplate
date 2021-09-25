@@ -1,3 +1,7 @@
+//Helpful Imports
+require('module-alias/register')
+const { runSubCmd, getAllSubCmds } = require('@utils/subCommands')
+
 module.exports = {
     name: "endcmd",
     description: "Ending Sub command",

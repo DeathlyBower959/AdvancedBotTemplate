@@ -1,4 +1,7 @@
-const jsonfile = require('jsonfile');
+//Helpful Imports
+require('module-alias/register')
+const { getCmdData } = require('@utils/cmdData')
+
 const { MessageButton, MessageActionRow } = require('discord.js');
 const fs = require('fs')
 
@@ -7,6 +10,7 @@ module.exports = {
     description: "Lists all avaliable bot commands",
     aliases: ['h'],
     cooldown: 3,
+    permissions: ['administrator'],
     async execute(message, args, cmd, client, Discord, prefix) {
 
         //Array that holds text for each embed page (Not fields becus lazy)
@@ -21,7 +25,8 @@ module.exports = {
             .filter(dir => fs.lstatSync(`src/commands/${dir}`).isDirectory())
 
         folderNames.forEach((item, index) => {
-            folderNames[index] = item.substring(1, item.length)
+            if (!isNaN(parseInt(item[0])))
+                folderNames[index] = item.split('_').join(' ').substring(1, item.length) //Remove the numbers at the beginning of the folder names
         })
 
         //Embed setup
@@ -52,48 +57,9 @@ module.exports = {
             return null;
         }
 
-        //Returns an object with data about a command (client.commands.get('cmdName')) 
-        const getCmdData = (cmd) => {
-            const fileName = cmd.cmd.name
-            const desc = cmd.cmd.description
-            const usage = cmd.cmd.usage
-            const aliases = cmd.cmd.aliases?.map(x => `${x} `)
-            const cooldown = secondsToDhms(cmd.cmd.cooldown)
-            const subCommands = cmd.subcmds?.map(x => `\`${x.cmd.name}\``)
-            const parentDirectory = cmd.parentDir
-
-            return {
-                name: fileName,
-                description: desc,
-                usage: usage,
-                aliases: aliases,
-                cooldown: cooldown,
-                subCommands: subCommands,
-                parentDir: parentDirectory
-            }
-        }
-
-        //Converts seconds into a more readable time format
-        const secondsToDhms = (seconds) => {
-            if (!seconds) return
-            seconds = Number(seconds);
-            let w = Math.floor(seconds % ((3600 * 24) * 7) / 3600);
-            let d = Math.floor(seconds % (3600 * 24) / 3600);
-            let h = Math.floor(seconds % (3600 * 24) / 3600);
-            let m = Math.floor(seconds % 3600 / 60);
-            let s = Math.floor(seconds % 60);
-
-            let wDisplay = w > 0 ? w + 'w, ' : "";
-            let dDisplay = d > 0 ? d + 'd, ' : "";
-            let hDisplay = h > 0 ? h + 'h, ' : "";
-            let mDisplay = m > 0 ? m + 'm, ' : "";
-            let sDisplay = s > 0 ? s + 's' : "";
-
-            return wDisplay + dDisplay + hDisplay + mDisplay + sDisplay;
-        }
 
         const findSubCmd = (cmd, arg) => {
-            return cmd?.subcmds?.find(cmd => cmd.cmd.name == arg)
+            return cmd?.subcmds?.find(cmd => cmd.cmd.name.toLowerCase() == arg.toLowerCase())
         }
 
         let retreivedCommands = []
@@ -103,7 +69,6 @@ module.exports = {
 
             //Looping through the args
             for (let i = 0; i < args.length; i++) {
-                if (i == 0) continue //Skips the first item (The command name)
                 const cmd = findSubCmd(retreivedCommands[i - 1], args[i])
                 if (cmd) retreivedCommands.push(cmd)
             }
@@ -172,16 +137,14 @@ module.exports = {
                 if (cooldown) textToAdd += `\nCooldown: ${cooldown}`
                 if (subCommands) textToAdd += `\nSubcommands: ${subCommands}`
 
-                if (previousParentDirectory != parentDirectory)
+                if (previousParentDirectory != parentDirectory) {
+                    if (!firstPage) currentPageIndex++
                     embedPages[currentPageIndex] = "\n" //Makes it so when creating new item it doesnt start off undefined
+                }
 
                 embedPages[currentPageIndex] += `${textToAdd}\n`
 
-                if (previousParentDirectory != parentDirectory && !firstPage) {
-                    currentPageIndex++
-                    firstPage = false
-                }
-
+                firstPage = false
 
                 previousParentDirectory = parentDirectory;
             })
@@ -194,7 +157,7 @@ module.exports = {
 
         helpEmbed.setTitle(`${embedTitlePrefix} - ${folderNames[0]}`) //Embed Title
         helpEmbed.setDescription(embedPages[0]) //Sets desc as default page
-        helpEmbed.setFooter(`Page ${currentPage} of ${embedPages.length}`) //Showing page location
+        helpEmbed.setFooter(`Page ${currentPage} of ${embedPages.length}  •  Requested By: ${message.author.username}`) //Showing page location
 
         const firstPgBtn = new MessageButton()
             .setCustomId('firstPage')
@@ -292,7 +255,7 @@ module.exports = {
                 currentPage = 1;
                 helpEmbed.setTitle(`${embedTitlePrefix} - ${folderNames[0]}`) //Embed Title
                 helpEmbed.setDescription(embedPages[0]);
-                helpEmbed.setFooter(`Page ${currentPage} of ${embedPages.length}`);
+                helpEmbed.setFooter(`Page ${currentPage} of ${embedPages.length}  •  Requested By: ${message.author.username}`);
                 await i.update({ embeds: [helpEmbed], components: [row] })
             })
 
@@ -305,7 +268,7 @@ module.exports = {
                 currentPage--; //If it can go back, move back a page number
                 helpEmbed.setTitle(`${embedTitlePrefix} - ${folderNames[currentPage - 1]}`) //Embed Title
                 helpEmbed.setDescription(embedPages[currentPage - 1]);
-                helpEmbed.setFooter(`Page ${currentPage} of ${embedPages.length}`);
+                helpEmbed.setFooter(`Page ${currentPage} of ${embedPages.length}  •  Requested By: ${message.author.username}`);
                 await i.update({ embeds: [helpEmbed], components: [row] })
             })
 
@@ -318,7 +281,7 @@ module.exports = {
                 currentPage++; //If it can go forward, move forward a page number
                 helpEmbed.setTitle(`${embedTitlePrefix} - ${folderNames[currentPage - 1]}`) //Embed Title
                 helpEmbed.setDescription(embedPages[currentPage - 1]);
-                helpEmbed.setFooter(`Page ${currentPage} of ${embedPages.length}`);
+                helpEmbed.setFooter(`Page ${currentPage} of ${embedPages.length}  •  Requested By: ${message.author.username}`);
                 await i.update({ embeds: [helpEmbed], components: [row] })
             })
 
@@ -331,7 +294,7 @@ module.exports = {
                 currentPage = embedPages.length
                 helpEmbed.setTitle(`${embedTitlePrefix} - ${folderNames[currentPage - 1]}`) //Embed Title
                 helpEmbed.setDescription(embedPages[currentPage - 1]);
-                helpEmbed.setFooter(`Page ${currentPage} of ${embedPages.length}`);
+                helpEmbed.setFooter(`Page ${currentPage} of ${embedPages.length}  •  Requested By: ${message.author.username}`);
                 await i.update({ embeds: [helpEmbed], components: [row] })
             })
 

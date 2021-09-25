@@ -1,3 +1,7 @@
+//Helpful Imports
+require('module-alias/register')
+const { runSubCmd, getAllSubCmds } = require('@utils/subCommands')
+
 const { MessageActionRow, MessageButton, MessageSelectMenu, SelectMenuInteraction } = require('discord.js');
 
 module.exports = {
@@ -7,17 +11,14 @@ module.exports = {
 	onlyDebug: true,
 	async execute(message, args, cmd, client, Discord, prefix) {
 
-		const subCmd = client.commands.get(cmd).subcmds.find(x => x.cmd.name.toLowerCase() == args[0]?.toString().toLowerCase())?.cmd
-		if (subCmd) {
-			subCmd.execute(message, args, cmd, client, Discord, prefix)
-			return;
-		}
+		if (runSubCmd(client.commands.get(cmd), args, { message: message, cmd: cmd, client: client, Discord: Discord, prefix: prefix }))
+            return
 
 		let menu1 = new MessageSelectMenu()
 			.setCustomId('sample')
 			.setPlaceholder('Nothing selected')
-			.setMinValues(2)
-			.setMaxValues(2)
+			.setMinValues(1)
+			.setMaxValues(3)
 			.addOptions(
 				[
 					{
@@ -29,6 +30,11 @@ module.exports = {
 						label: 'Option 2',
 						description: 'A Second description',
 						value: 'OPTION_ID2',
+					}, 
+					{
+						label: 'Option 3',
+						description: 'A Third description',
+						value: 'OPTION_ID3',
 					}
 				])
 
@@ -42,7 +48,11 @@ module.exports = {
 			const sampleFilterCollector = msg.createMessageComponentCollector({ filter: sampleFilter, time: 10000 }); //10 seconds to use the button
 
 			sampleFilterCollector.on('collect', async i => {
-				await i.update({ content: `Select Menu Option ID[s]: \n${i.values?.map(x => `\`${x}\` `)}`, components: [row] })
+				await i.update({ content: `Selected Item ID[s]: \n${i.values?.map(x => `\`${x}\` `)}`, components: [row] })
+			})
+
+			sampleFilterCollector.on('end', async i => {
+				await i.update({ content: `This interaction has timed out! Try running the command again`})
 			})
 		});
 

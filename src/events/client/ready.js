@@ -1,7 +1,8 @@
-const fs = require('fs');
-const jsonfile = require('jsonfile');
-const { prefix, statusDelay, statuses } = require("../../../config.json");
-const { subcommands } = require('../../commands/1Sample/select');
+//Helpful Imports
+require('module-alias/register')
+
+
+const { prefix, statusDelay, statuses } = require('@root/config.json');
 
 
 let client, Discord
@@ -9,9 +10,9 @@ let client, Discord
 const setStatuses = async () => {
     const validStatuses = [
         "PLAYING",
-        "STREAMING",
-        "LISTENING",
         "WATCHING",
+        "LISTENING",
+        "STREAMING",
         "COMPETING"
     ]
 
@@ -20,17 +21,33 @@ const setStatuses = async () => {
     })
 
     if (statuses.length > 0) {
-        let guildCount = client.guilds.cache.size;
-        let guildCountText = `${guildCount} guild`
+        //Gets replacable variables
+        let guildCount = 0;
+        let userCount = 0;
+        let guildCountText
+        let userCountText
+        client.guilds.cache.forEach((guild) => {
+            guildCount++
+            userCount += guild.memberCount
+        });
+
+        guildCountText = `${guildCount} guild`
         if (guildCount > 1) {
             guildCountText = `${guildCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} guilds`
+        }
+
+        userCountText = `${userCount} user`
+        if (userCount > 1) {
+            userCountText = `${userCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} users`
         }
 
         client.user.setActivity(
             statuses[0].content
                 .replace("{prefix}", prefix)
                 .replace("{guildCount}", guildCount)
-                .replace("{guildCountText}", guildCountText), {
+                .replace("{guildCountText}", guildCountText)
+                .replace("{userCount}", userCount)
+                .replace("{userCountText}", userCountText), {
             type: statuses[0].type.toUpperCase()
         });
 
@@ -38,13 +55,30 @@ const setStatuses = async () => {
         setInterval(function () {
 
             //Gets replacable variables
-            guildCount = client.guilds.cache.size;
+            guildCount = 0;
+            userCount = 0;
+            client.guilds.cache.forEach((guild) => {
+                guildCount++
+                userCount += guild.memberCount
+            });
+
+            guildCountText = `${guildCount} guild`
+            if (guildCount > 1) {
+                guildCountText = `${guildCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} guilds`
+            }
+
+            userCountText = `${userCount} user`
+            if (userCount > 1) {
+                userCountText = `${userCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} users`
+            }
 
             //Gets selected status
             var status = statuses[index].content
                 .replace("{prefix}", prefix)
                 .replace("{guildCount}", guildCount)
                 .replace("{guildCountText}", guildCountText)
+                .replace("{userCount}", userCount)
+                .replace("{userCountText}", userCountText)
 
             client.user.setActivity(status, {
                 type: statuses[index].type.toUpperCase()
@@ -57,44 +91,6 @@ const setStatuses = async () => {
     }
 }
 
-const setHelp = async () => {
-    // Help commands
-    var dirs = {}
-
-    const commandDirs = fs
-        .readdirSync('src/commands')
-        .filter(dir => fs.lstatSync(`src/commands/${dir}`).isDirectory())
-
-    commandDirs.forEach(dir => {
-        //Creates new empty object for each directory
-        dirs[dir.substring(1)] = {}
-
-        const dirCmds = fs.readdirSync(`src/commands/${dir}`).filter(file => file.endsWith('.js'))
-        dirCmds.forEach(file => {
-            let fileName = file.split('.')[0]
-
-            const retreivedCmd = client.commands.get(fileName)?.cmd
-
-            let desc = retreivedCmd?.description
-            let usage = retreivedCmd?.usage
-            let alia = retreivedCmd?.aliases
-            let subCmds = client.commands.get(fileName)?.subcmds
-
-            let pushObject = {}
-
-            if (desc) pushObject["Description"] = desc
-            if (usage) pushObject["Usage"] = usage
-            if (alia) pushObject["Aliases"] = alia
-            if (subCmds) pushObject["SubCommands"] = subCmds
-
-            dirs[dir.substring(1)][fileName] = pushObject
-
-        })
-    })
-    jsonfile.writeFileSync('./dirs.json', dirs, {
-        spaces: 2
-    })
-}
 module.exports = async (CLIENT, DISCORD) => {
     console.log('Bot is online!')
 
@@ -102,5 +98,4 @@ module.exports = async (CLIENT, DISCORD) => {
     Discord = DISCORD
 
     setStatuses()
-    setHelp()
 }

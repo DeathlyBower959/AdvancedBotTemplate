@@ -1,15 +1,28 @@
 {
 	"prefix": "!",
 	"owner": "689284642184101970",
-	"statusDelay": 10,
+	"statusDelay": 5,
+	"permissionsInteger": "8",
 	"statuses": [
 		{
-			"type": "playing", 
-			"content": "{prefix}help | .gg/pfZATvy3Fs"
+			"type": "PLAYING", 
+			"content": "{prefix}help"
 		},
 		{
-			"type": "WATCHING", 
+			"type": "WATCHING",
+			"content": "{guildCount}"
+		},
+		{
+			"type": "LISTENING",
 			"content": "{guildCountText}"
+		},
+		{
+			"type": "STREAMING", 
+			"content": "{userCount}"
+		},
+		{
+			"type": "COMPETING", 
+			"content": "{userCountText}"
 		}
 	]
 }

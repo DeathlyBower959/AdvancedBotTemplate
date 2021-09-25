@@ -4,7 +4,7 @@ const runSubCmd = (command, args, dataObject, startIndex) => {
     const findSubCmd = (cmd) => {
         let subCmd
         if (cmd.subcmds) {
-            subCmd = cmd.subcmds?.find(x => x.cmd.name.toLowerCase() == args[argsIndex]?.toLowerCase())
+            subCmd = cmd.subcmds?.find(cmd => cmd.cmd.name.toLowerCase() == args[argsIndex]?.toLowerCase() || cmd.cmd.aliases?.find(alias => alias.toLowerCase() == args[argsIndex]?.toLowerCase()))
             argsIndex++
 
             if (subCmd)
@@ -24,4 +24,24 @@ const runSubCmd = (command, args, dataObject, startIndex) => {
     }
 }
 
-module.exports = { runSubCmd }
+const getAllSubCmds = (cmd) => {
+    let subCmds = []
+    if (cmd.subcommands) {
+        cmd.subcommands.forEach(item => {
+            let cmdObject = { cmd: item }
+            const cmdSubCmds = getAllSubCmds(item)
+            if (cmdSubCmds != null)
+                cmdObject.subcmds = cmdSubCmds
+
+            subCmds.push(cmdObject)
+        })
+        if (subCmds.length > 0)
+            return subCmds
+        else 
+            return null
+    }
+
+    return null;
+}
+
+module.exports = { runSubCmd, getAllSubCmds }

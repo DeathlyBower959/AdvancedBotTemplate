@@ -15,6 +15,13 @@
     "discord.js": "^13.1.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "jsonfile": "^6.1.0"
+    "module-alias": "^2.2.2"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@commands": "./src/commands",
+    "@events": "./src/events",
+    "@handlers": "./src/handlers",
+    "@utils": "./src/utils"
   }
 }
