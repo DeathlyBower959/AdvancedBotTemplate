@@ -2,7 +2,6 @@
 	"prefix": "!",
 	"owner": "689284642184101970",
 	"statusDelay": 5,
-	"permissionsInteger": "8",
 	"statuses": [
 		{
 			"type": "PLAYING", 

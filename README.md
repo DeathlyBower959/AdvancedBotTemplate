@@ -9,7 +9,7 @@ Once you have node.js installed, please continue.
 
 - Clone this repository somewhere on your machine.
 - Open a command prompt in the bots root directory
-- Run `npm install`
+- Run `npm i`
 
 # Bot Setup
 - Go to the [Discord Dev](https://discord.com/developers/applications/) page

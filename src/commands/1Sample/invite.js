@@ -1,7 +1,6 @@
 //Helpful Imports
 require('module-alias/register')
-const {permissionsInteger} = require('@root/config.json')
-const { MessageButton, MessageActionRow } = require('discord.js');
+const { MessageButton, MessageActionRow, Permissions, MessageEmbed} = require('discord.js');
 
 module.exports = {
     name: "invite",
@@ -9,7 +8,21 @@ module.exports = {
     cooldown: 5, // Optional
     async execute(message, args, cmd, client, Discord, prefix) {
 
-        const pingEmbed = new Discord.MessageEmbed()
+        const invite = await client.generateInvite({
+            permissions: [
+                Permissions.FLAGS.CHANGE_NICKNAME,
+                Permissions.FLAGS.VIEW_CHANNEL,
+                Permissions.FLAGS.SEND_MESSAGES,
+                Permissions.FLAGS.EMBED_LINKS,
+                Permissions.FLAGS.ATTACH_FILES,
+                Permissions.FLAGS.READ_MESSAGE_HISTORY,
+                Permissions.FLAGS.ADD_REACTIONS,
+                Permissions.FLAGS.USE_EXTERNAL_EMOJIS,
+            ],
+            scopes: ['bot']
+        })
+
+        const inviteEmbed = new MessageEmbed()
             .setColor('GREEN')
             .setTitle('Invite')
             .setDescription(`You can invite the bot by clicking the button below!`);
@@ -17,7 +30,7 @@ module.exports = {
         let inviteButton = new MessageButton()
             .setLabel('Invite')
             .setStyle('LINK')
-            .setURL(`https://discordapp.com/oauth2/authorize?client_id=${client.user.id}&scope=bot&permissions=${permissionsInteger}`)
+            .setURL(invite)
 
         let deleteButton = new MessageButton()
             .setCustomId('deleteEmbed')
@@ -30,7 +43,7 @@ module.exports = {
                 deleteButton
             );
 
-        await message.channel.send({ embeds: [pingEmbed], components: [row] }).then(msg => {
+        await message.channel.send({ embeds: [inviteEmbed], components: [row] }).then(msg => {
             const deleteEmbedFilter = btn => btn.customId === 'deleteEmbed' && btn.user.id === message.author.id;
             const deleteEmbedCollector = msg.createMessageComponentCollector({ filter: deleteEmbedFilter, time: 20000 }); //10 seconds to use the button
 
