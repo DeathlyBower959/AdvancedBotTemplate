@@ -1,5 +1,6 @@
 //Helpful Imports
 require('module-alias/register')
+
 const { MessageButton, MessageActionRow, Permissions, MessageEmbed} = require('discord.js');
 
 module.exports = {
@@ -11,7 +12,7 @@ module.exports = {
         const invite = await client.generateInvite({
             permissions: [
                 Permissions.FLAGS.ADMINISTRATOR,
-                
+
                 Permissions.FLAGS.ADD_REACTIONS,
                 Permissions.FLAGS.ATTACH_FILES,
                 Permissions.FLAGS.BAN_MEMBERS,

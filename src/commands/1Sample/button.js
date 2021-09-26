@@ -1,7 +1,6 @@
 //Helpful Imports
 require('module-alias/register')
 
-
 const { MessageActionRow, MessageButton } = require('discord.js');
 
 module.exports = {

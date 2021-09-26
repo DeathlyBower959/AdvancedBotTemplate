@@ -1,7 +1,6 @@
 //Helpful Imports
 require('module-alias/register')
 
-
 module.exports = {
   name: "ping",
   description: "The bots round-trip delay and server heartbeat",
