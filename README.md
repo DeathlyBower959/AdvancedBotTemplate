@@ -5,7 +5,7 @@
 # Installation
 To begin with, you need [node.js](https://nodejs.org) installed on your system.
 
-Once you have node.js installed, please continue.
+Once you have node.js installed, continue below.
 
 - Clone this repository somewhere on your machine.
 - Open a command prompt in the bots root directory
@@ -18,9 +18,7 @@ Once you have node.js installed, please continue.
 - Rename the file `template.env` to `.env`
 - Inside the `.env` file, change the token to your token: `token=TOKEN_THAT_YOU_COPIED_EARLIER`
 - Open `config.json` and set the configs that you want
-- Back on the [Discord Dev](https://discord.com/developers/applications/) page, scroll down and choose the permissions you want your bot to have
-- Copy the `PERMISSIONS INTEGER`
-- Paste the permissions integer into the `config.json`
+- In the `commands/1Sample/invite.js` file, and change the permissions array to what permissions your bot needs
 - If all is well, then run `node .` or `node src/bot.js`
 
 # Invite Bot
