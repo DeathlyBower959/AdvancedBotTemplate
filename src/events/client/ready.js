@@ -28,7 +28,7 @@ const setStatuses = async () => {
         let userCountText
         client.guilds.cache.forEach((guild) => {
             guildCount++
-            userCount += guild.memberCount
+            userCount += guild.memberCount - 1 //Removes the bot so its an accurate memeber count
         });
 
         guildCountText = `${guildCount} guild`
@@ -47,7 +47,8 @@ const setStatuses = async () => {
                 .replace("{guildCount}", guildCount)
                 .replace("{guildCountText}", guildCountText)
                 .replace("{userCount}", userCount)
-                .replace("{userCountText}", userCountText), {
+                .replace("{userCountText}", userCountText)
+                .replace("{s}", `${userCount > 1 ? "s" : ""}`), {
             type: statuses[0].type.toUpperCase()
         });
 
@@ -59,7 +60,7 @@ const setStatuses = async () => {
             userCount = 0;
             client.guilds.cache.forEach((guild) => {
                 guildCount++
-                userCount += guild.memberCount
+                userCount += guild.memberCount - 1 //Removes the bot so its an accurate memeber count
             });
 
             guildCountText = `${guildCount} guild`
@@ -78,7 +79,7 @@ const setStatuses = async () => {
                 .replace("{guildCount}", guildCount)
                 .replace("{guildCountText}", guildCountText)
                 .replace("{userCount}", userCount)
-                .replace("{userCountText}", userCountText)
+                .replace("{s}", `${userCount > 1 ? "s" : ""}`)
 
             client.user.setActivity(status, {
                 type: statuses[index].type.toUpperCase()

@@ -9,7 +9,7 @@
 		},
 		{
 			"type": "WATCHING",
-			"content": "{guildCount}"
+			"content": "{guildCount} guild{s}"
 		},
 		{
 			"type": "LISTENING",
@@ -17,7 +17,7 @@
 		},
 		{
 			"type": "STREAMING", 
-			"content": "{userCount}"
+			"content": "{userCount} user{s}"
 		},
 		{
 			"type": "COMPETING", 
