@@ -15,6 +15,7 @@ Once you have node.js installed, continue below.
 - Go to the [Discord Dev](https://discord.com/developers/applications/) page
 - If you haven't created a new application, then create one now. Otherwise, just open the application
 - Go to the `Bot` tab on the left. If you haven't created a bot account yet, create one now, and then copy the token
+- Scroll down a bit and enable `Server Members Intent` and `Message Content Intent`
 - Rename the file `template.env` to `.env`
 - Inside the `.env` file, change the token to your token: `token=TOKEN_THAT_YOU_COPIED_EARLIER`
 - Open `config.json` and set the configs that you want
@@ -74,7 +75,7 @@ module.exports = {
     async execute(message, args, cmd, client, Discord, prefix) {
   
         //Runs a subcommand
-        if (runSubCmd(client.commands.get(cmd), args, { message: message, cmd: cmd, client: client, Discord: Discord, prefix: prefix }))
+        if (runSubCmd(client.commands.get(cmd), args.shift(), { message: message, cmd: cmd, client: client, Discord: Discord, prefix: prefix }))
             return
 
       //Your code in here
@@ -103,7 +104,7 @@ module.exports = {
     onlyDebug: true, //Optional (Defaults to false)
   async execute(message, args, cmd, client, Discord, prefix, currentCmd, parentCommand, argsIndex) {
 
-    if (runSubCmd(currentCmd, args, { message: message, cmd: cmd, client: client, Discord: Discord, prefix: prefix }, argsIndex))
+    if (runSubCmd(currentCmd, args.shift(), { message: message, cmd: cmd, client: client, Discord: Discord, prefix: prefix }, argsIndex))
       return
 
     //Your code here
