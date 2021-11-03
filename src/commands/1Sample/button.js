@@ -8,7 +8,7 @@ module.exports = {
     description: "A sample Button command",
     cooldown: 0, // Optional
     onlyDebug: true,
-    async execute (message, args, cmd, client, Discord, prefix) {
+    async execute(message, args, cmd, client, Discord, prefix) {
 
         let button1 = new MessageButton()
             .setCustomId('sample')
@@ -20,9 +20,18 @@ module.exports = {
                 button1
             );
 
+        let interactionTime = 20000; //Milliseconds
+
         await message.channel.send({ content: 'Sample', components: [row] }).then(msg => {
+
+            setTimeout(() => {
+                msg.edit('Interaction timed out!');
+                setTimeout(() => {
+                    if (msg) msg.delete();
+                }, 1000)
+            }, interactionTime)
             const sampleFilter = btn => btn.customId === 'sample' && btn.user.id === message.author.id;
-            const sampleFilterCollector = msg.createMessageComponentCollector({ filter: sampleFilter, time: 10000 }); //10 seconds to use the button
+            const sampleFilterCollector = msg.createMessageComponentCollector({ filter: sampleFilter, time: interactionTime }); //10 seconds to use the button
 
             sampleFilterCollector.on('collect', async i => {
                 await i.update({ content: 'The button was clicked!', components: [row] })

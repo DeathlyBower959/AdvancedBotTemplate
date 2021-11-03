@@ -10,7 +10,7 @@ module.exports = {
   onlyDebug: true,
   async execute(message, args, cmd, client, Discord, prefix, currentCmd, parentCommand, argsIndex) {
 
-    if (runSubCmd(currentCmd, args, { message: message, cmd: cmd, client: client, Discord: Discord, prefix: prefix }, argsIndex))
+    if (runSubCmd(currentCmd, args.shift(), { message: message, cmd: cmd, client: client, Discord: Discord, prefix: prefix }, argsIndex))
       return
 
     message.channel.send({ content: `A subcommand of **${parentCommand.cmd.name}** was run!` })

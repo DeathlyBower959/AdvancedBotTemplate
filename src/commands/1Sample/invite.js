@@ -9,7 +9,7 @@ module.exports = {
     cooldown: 5, // Optional
     async execute(message, args, cmd, client, Discord, prefix) {
 
-        const invite = await client.generateInvite({
+        const invite = await client.generateInvite({ // You can edit these permissions to change what perms your bot needs
             permissions: [
                 Permissions.FLAGS.ADMINISTRATOR,
 
@@ -50,7 +50,7 @@ module.exports = {
                 Permissions.FLAGS.VIEW_CHANNEL,
                 Permissions.FLAGS.VIEW_GUILD_INSIGHTS
             ],
-            scopes: ['bot']
+            scopes: ['bot', 'applications.commands']
         })
 
         const inviteEmbed = new MessageEmbed()

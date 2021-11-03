@@ -9,7 +9,7 @@ module.exports = {
     onlyDebug: true,
     async execute(message, args, cmd, client, Discord, prefix, currentCmd, parentCommand) {
   
-      message.channel.send({ content: `A subcommand3 of **${parentCommand.cmd.name}** was run!` })
+      message.channel.send({ content: `A subcommand of **${parentCommand.cmd.name}** was run!` })
   
     }
   }

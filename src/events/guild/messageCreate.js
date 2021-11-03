@@ -1,7 +1,6 @@
 //Helpful Imports
 require('module-alias/register')
 
-
 const { prefix, owner } = require('@root/config.json');
 
 //Require Permissions From Discord.js instead of Discord.Permissions
