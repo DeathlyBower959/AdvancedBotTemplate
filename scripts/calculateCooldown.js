@@ -1,4 +1,6 @@
 var args = process.argv.slice(2);
+require('colors')
+var cp = require("copy-paste");
 
 const WdhmsToSeconds = () => {
     let weeks = 0;
@@ -36,9 +38,17 @@ const chk = (args) => {
 }
 
 if (args.length > 0 && args.length <= 5 && chk(args)) {
-    const seconds = WdhmsToSeconds(args);
-    console.log(`${(Math.round(seconds * 100) / 100).toLocaleString()} seconds`)
-    console.log(`Copy: ${seconds}`)
+    const seconds = (Math.round(WdhmsToSeconds(args) * 100) / 100).toLocaleString()
+
+    console.log(`${seconds.green} seconds`)
+
+    try {
+        cp.copy(seconds.split(',').join('_'))
+        console.log(`Copied to clipboard!`.green)
+    }
+    catch (err) {
+        console.log(`Copy: ${seconds}`.green)
+    }
 } else {
-    console.log('Please specify a time frame!\n"1w 2d 3h 4m 5s"')
+    console.log('Please specify a time frame!'.red + " | " + "1w 2d 3h 4m 5s".green)
 }
