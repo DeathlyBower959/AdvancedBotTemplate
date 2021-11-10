@@ -8,7 +8,7 @@ module.exports = (client, Discord) => {
     let tables = []
 	const load_dir = (dir) => {
         try {
-            let table = new ascii(dir == '' ? "Commands" : dir);
+            let table = new ascii(dir == '' ? "Events" : dir);
             table.setHeading("Event", "Load status");
 
             const event_files = fs
