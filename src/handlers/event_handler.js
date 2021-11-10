@@ -30,7 +30,7 @@ module.exports = (client, Discord) => {
             if (table.getRows().length > 0)
                 tables.push(table.toString().yellow)
         } catch (e) {
-            console.log(String(e.stack).red);
+            console.log(e.stack.toString().red);
         }
     }
 

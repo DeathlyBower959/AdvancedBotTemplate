@@ -1,5 +1,5 @@
 require('module-alias/register')
-const { runSubCmd, getAllSubCmds } = require('@utils/subCommands')
+const { getAllSubCmds } = require('@utils/subCommands')
 
 const fs = require('fs')
 const ascii = require("ascii-table");
@@ -17,7 +17,7 @@ module.exports = (client, Discord) => {
                 .filter(file => file.endsWith('.js'));
 
             for (const file of command_files) {
-                const command = require(`../commands/${dir}/${file}`);
+                const command = require(`@commands/${dir}/${file}`);
                 if (command.name) {
                     let cmdObject = { cmd: command, parentDir: dir };
                     if (command.subcommands) {
@@ -33,7 +33,7 @@ module.exports = (client, Discord) => {
             if (table.getRows().length > 0)
                 tables.push(table.toString().cyan)
         } catch (e) {
-            console.log((e.stack).toString());
+            console.log(e.stack.toString().red);
         }
     }
 
